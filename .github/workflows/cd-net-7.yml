@@ -20,13 +20,17 @@ jobs:
         with:
           dotnet-version: 7.0.x
       - name: Restore dependencies
-        run: dotnet restore
+        run: |
+          cd WebApi
+          dotnet restore
       - name: Build
-        run: dotnet build --no-restore
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: | 
+          cd WebApi
+          dotnet build --no-restore
       - name: Publish
-        run: dotnet publish --configuration release --output dist
+        run: |
+          cd WebApi
+          dotnet publish --configuration release --output dist
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ env.DIST_FOLDER }}
