@@ -1,0 +1,86 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+env:
+  DIST_FOLDER: WebApi
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+      - name: Publish
+        run: dotnet publish --configuration release --output dist
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.DIST_FOLDER }}
+          path: dist
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.DIST_FOLDER }}
+          path: ${{ env.DIST_FOLDER }}
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.SP_OVER_RG }}
+      - name: Create environment
+        run: >
+          az deployment group create --resource-group minimal-linux-example --template-file main.bicep 
+          --name ${{github.run_number}} 
+          --parameters linuxFxVersion='DOTNETCORE|7.0'
+          --parameters netFrameworkVersion='v7.0'
+          --name minimal-linux-example
+      - name: Zip
+        run: |
+          zip -r dist.zip ${{ env.DIST_FOLDER }} 
+      - name: Azure WebApp Deploy
+        run: >
+          az webapp deployment source config-zip 
+          --subscription ${{ secrets.SUBSCRIPTION }} 
+          --resource-group minimal-linux-example
+          --name minimal-linux-example-app 
+          --src dist.zip
+
+  check:
+    name: Ping Website
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.SP_OVER_RG }}
+      - name: Ping website
+        run: |
+          curl -s https://minimal-linux-example-app.azurewebsites.net/ | grep -q 'Working on linux!'
+          if [ $? -eq 0 ]
+          then
+            echo "Website is up"
+          else
+            echo "Website is down"
+            exit 1
+          fi
+
