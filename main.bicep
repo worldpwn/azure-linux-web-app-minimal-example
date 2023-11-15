@@ -22,8 +22,8 @@ resource appService 'Microsoft.Web/sites@2021-03-01' = {
     siteConfig: {
       ftpsState: 'Disabled'
       http20Enabled: true
-      netFrameworkVersion: 'v7.0'
-      linuxFxVersion: 'DOTNETCORE|7.0'
+      netFrameworkVersion: 'v8.0'
+      linuxFxVersion: 'DOTNETCORE|8.0'
       appCommandLine: 'dotnet WebApi.dll'
       publicNetworkAccess: 'Enabled'
     }
