@@ -1,7 +1,12 @@
 # Minimal Linux Web App Project to Run and Deploy to Azure
 
+## Get SP
+```bash
+az ad sp create-for-rbac --name "sp-minmal-linux-example" --role contributor --scopes rg-id
+```
 
-# Run project localy
+
+# Run project locally
 
 ### Build
 ```shell
