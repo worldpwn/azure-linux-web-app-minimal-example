@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  DIST_FOLDER: dist
+  DIST_FOLDER: WebApi
 
 jobs:
   build:
@@ -63,7 +63,7 @@ jobs:
           --resource-group minimal-linux-example
           --name minimal-linux-example-app 
           --src dist.zip
-          
+
   check:
     name: Ping Website
     runs-on: ubuntu-latest
