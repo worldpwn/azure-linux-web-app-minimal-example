@@ -21,15 +21,15 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore dependencies
         run: |
-          cd WebApi
+          cd WebApiNet7
           dotnet restore
       - name: Build
         run: | 
-          cd WebApi
+          cd WebApiNet7
           dotnet build --no-restore
       - name: Publish
         run: |
-          cd WebApi
+          cd WebApiNet7
           dotnet publish --configuration release --output dist
       - uses: actions/upload-artifact@v2
         with:
