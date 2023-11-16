@@ -59,7 +59,7 @@ jobs:
           --parameters linuxFxVersion='DOTNETCORE|8.0'
           --parameters netFrameworkVersion='v8.0'
           --parameters name='minimal-linux-example-new-dotnet'
-          --parameters location='uksouth'
+          --parameters location='asia'
       - name: Zip
         run: |
           zip -r dist.zip ${{ env.DIST_FOLDER }} 
