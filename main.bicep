@@ -29,7 +29,7 @@ resource appService 'Microsoft.Web/sites@2021-03-01' = {
       http20Enabled: true
       netFrameworkVersion: netFrameworkVersion
       linuxFxVersion: linuxFxVersion
-      appCommandLine: 'dotnet WebApi.dll'
+      appCommandLine: 'dotnet WebApi/WebApi.dll'
       publicNetworkAccess: 'Enabled'
     }
   }
