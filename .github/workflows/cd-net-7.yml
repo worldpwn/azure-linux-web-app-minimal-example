@@ -12,7 +12,7 @@ env:
 jobs:
   build:
     name: Build
-    uses: ./.github/workflows/build
+    uses: ./.github/workflows/templates/build
     with:
       dotnet-version: 7.0.x
       app-folder: WebApiNet7
