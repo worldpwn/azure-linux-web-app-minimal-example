@@ -1,4 +1,4 @@
-param location string = resourceGroup().location
+param location string
 @allowed([ 'DOTNETCORE|7.0', 'DOTNETCORE|8.0' ])
 param linuxFxVersion string
 @allowed([ 'v7.0', 'v8.0' ])
@@ -20,7 +20,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2020-12-01' = {
 
 resource appService 'Microsoft.Web/sites@2021-03-01' = {
   name: '${name}-app'
-  location: 'eastus'
+  location: location
   properties: {
     serverFarmId: hostingPlan.id
     httpsOnly: true
