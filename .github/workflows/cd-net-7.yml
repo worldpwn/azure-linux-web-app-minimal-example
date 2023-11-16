@@ -1,4 +1,4 @@
-name: CI/CD
+name: CD Dotnet 7
 
 on:
   push:
@@ -12,29 +12,12 @@ env:
 jobs:
   build:
     name: Build
+    uses: ./.github/templates/build
+    with:
+      dotnet-version: 7.0.x
+      app-folder: WebApiNet7
+      dist-folder: ${{ env.DIST_FOLDER }}
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 7.0.x
-      - name: Restore dependencies
-        run: |
-          cd WebApiNet7
-          dotnet restore
-      - name: Build
-        run: | 
-          cd WebApiNet7
-          dotnet build --no-restore
-      - name: Publish
-        run: |
-          dotnet publish WebApiNet7/WebApi.csproj --configuration release --output dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.DIST_FOLDER }}
-          path: dist
-          if-no-files-found: error
 
   deploy:
     name: Deploy
