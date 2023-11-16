@@ -22,7 +22,7 @@ runs:
         dotnet restore
     - name: Build
       run: | 
-      cd ${{ inputs.app-folder }}
+        cd ${{ inputs.app-folder }}
         dotnet build --no-restore
     - name: Publish
       run: |
