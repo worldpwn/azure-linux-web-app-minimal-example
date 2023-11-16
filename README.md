@@ -1,3 +1,7 @@
+[![CD Dotnet 7](https://github.com/worldpwn/azure-linux-web-app-minimal-example/actions/workflows/cd-net-7.yml/badge.svg)](https://github.com/worldpwn/azure-linux-web-app-minimal-example/actions/workflows/cd-net-7.yml)
+
+[![CD Dotnet 8](https://github.com/worldpwn/azure-linux-web-app-minimal-example/actions/workflows/cd-net-8.yml/badge.svg)](https://github.com/worldpwn/azure-linux-web-app-minimal-example/actions/workflows/cd-net-8.yml)
+
 # Minimal Linux Web App Project to Run and Deploy to Azure
 
 ## Get SP
