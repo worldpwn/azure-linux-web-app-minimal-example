@@ -68,7 +68,7 @@ jobs:
           az webapp deployment source config-zip 
           --subscription ${{ secrets.SUBSCRIPTION }} 
           --resource-group minimal-linux-example
-          --name minimal-linux-example-app 
+          --name minimal-linux-example-new-dotnet-app
           --src dist.zip
 
   check:
