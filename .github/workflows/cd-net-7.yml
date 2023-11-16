@@ -41,6 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: ${{ env.DIST_FOLDER }}
@@ -51,7 +52,9 @@ jobs:
           creds: ${{ secrets.SP_OVER_RG }}
       - name: Create environment
         run: >
-          az deployment group create --resource-group minimal-linux-example --template-file main.bicep 
+          az deployment group create 
+          --resource-group minimal-linux-example 
+          --template-file main.bicep 
           --name ${{github.run_number}} 
           --parameters linuxFxVersion='DOTNETCORE|7.0'
           --parameters netFrameworkVersion='v7.0'
