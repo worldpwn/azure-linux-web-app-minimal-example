@@ -7,7 +7,7 @@ param name string
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2020-12-01' = {
   name: '${name}-hosting-plan'
-  location: location
+  location: 'eastus'
   kind: 'linux'
   properties: {
     reserved: true
@@ -20,7 +20,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2020-12-01' = {
 
 resource appService 'Microsoft.Web/sites@2021-03-01' = {
   name: '${name}-app'
-  location: location
+  location: 'eastus'
   properties: {
     serverFarmId: hostingPlan.id
     httpsOnly: true
