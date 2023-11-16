@@ -1,0 +1,93 @@
+name: CD Dotnet 8
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+env:
+  DIST_FOLDER: WebApi
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: |
+          cd WebApiNet8
+          dotnet restore
+      - name: Build
+        run: | 
+          cd WebApiNet8
+          dotnet build --no-restore
+      - name: Publish
+        run: |
+          dotnet publish WebApiNet8/WebApi.csproj --configuration release --output dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.DIST_FOLDER }}
+          path: dist
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.DIST_FOLDER }}
+          path: ${{ env.DIST_FOLDER }}
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.SP_OVER_RG }}
+      - name: Create environment
+        run: >
+          az deployment group create 
+          --resource-group minimal-linux-example 
+          --template-file main.bicep 
+          --name ${{github.run_number}} 
+          --parameters linuxFxVersion='DOTNETCORE|8.0'
+          --parameters netFrameworkVersion='v8.0'
+          --parameters name='minimal-linux-example-new-dotnet'
+          --parameters location='northeurope'
+      - name: Zip
+        run: |
+          zip -r dist.zip ${{ env.DIST_FOLDER }} 
+      - name: Azure WebApp Deploy
+        run: >
+          az webapp deployment source config-zip 
+          --subscription ${{ secrets.SUBSCRIPTION }} 
+          --resource-group minimal-linux-example
+          --name minimal-linux-example-app 
+          --src dist.zip
+
+  check:
+    name: Ping Website
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.SP_OVER_RG }}
+      - name: Ping website
+        run: |
+          curl -s https://minimal-linux-example-new-dotnet-app.azurewebsites.net/ | grep -q 'Working on linux!'
+          if [ $? -eq 0 ]
+          then
+            echo "Website is up"
+          else
+            echo "Website is down"
+            exit 1
+          fi
+
