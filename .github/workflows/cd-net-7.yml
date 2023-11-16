@@ -58,7 +58,7 @@ jobs:
           --name ${{github.run_number}} 
           --parameters linuxFxVersion='DOTNETCORE|7.0'
           --parameters netFrameworkVersion='v7.0'
-          --name minimal-linux-example
+          --parameters name='minimal-linux-example'
       - name: Zip
         run: |
           zip -r dist.zip ${{ env.DIST_FOLDER }} 
